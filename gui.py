@@ -303,6 +303,19 @@ class AddonConfigWindow(QDialog):
         h_layout.addWidget(btn_Add_WL)
         layout.addLayout(h_layout,QtCore.Qt.AlignTop)
 
+        # Delete on fetching
+        h_layout = QHBoxLayout()
+        h_label = QLabel()
+        h_label.setText('Delete on fetching:')
+        h_layout.addWidget(h_label)
+        h_layout.addStretch()
+        self.cb_delete_on_fetching = QCheckBox()
+        self.cb_delete_on_fetching.setChecked(
+            self.config['delete_on_fetching'] if 'delete_on_fetching' in self.config else True
+        )
+        h_layout.addWidget(self.cb_delete_on_fetching, QtCore.Qt.AlignRight)
+        layout.addLayout(h_layout, QtCore.Qt.AlignTop)
+
         #Find and fetch all pictures instead of links
         find_btn = QPushButton()
         find_btn.setText('Replace all URL with pictures in deck')
@@ -357,6 +370,7 @@ class AddonConfigWindow(QDialog):
         self.config['cookie'] = self.editor_cookie.text()
         self.config['pronunciation_uk'] = self.cb_pronunciation_uk.isChecked()
         self.config['pronunciation_us'] = self.cb_pronunciation_us.isChecked()
+        self.config['delete_on_fetching'] = self.cb_delete_on_fetching.isChecked()
         wl = []
         for i in self.iterAllItems(self.wordlist_list):
             wl.append(i.text())
@@ -592,7 +606,8 @@ class FetchThread(QThread):
                 wd_entry = self.downloader.find_word_by_wl_entry(wl_entry)
                 if wd_entry != None:
                     self.addWordEvent(wd_entry)
-                    self.downloader.delete_word_from_wordlist(wl_entry)
+                    if self.config['delete_on_fetching']:
+                        self.downloader.delete_word_from_wordlist(wl_entry)
             n += 1
 
 class WebPageView(QDialog):

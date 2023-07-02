@@ -212,7 +212,7 @@ def get_config():
                 config = json.loads(f.read())
         except IOError:
             try:
-                config = {'cookie':'', 'pronunciation_uk': True, 'pronunciation_us': True}
+                config = {'cookie': '', 'pronunciation_uk': True, 'pronunciation_us': True, 'delete_on_fetching': True}
                 config_file = os.path.join(get_addon_dir(), 'config.json')
                 with open(config_file, 'w') as f:
                     json.dump(config, f, sort_keys=True, indent=2)
